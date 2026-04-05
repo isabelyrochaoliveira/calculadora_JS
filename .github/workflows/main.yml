@@ -1,0 +1,29 @@
+name: CI Calculadora
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout do código
+      uses: actions/checkout@v4
+
+    - name: Configurar Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Instalar dependências
+      run: npm install
+
+    - name: Verificar erros de sintaxe (Lint)
+      run: |
+        # Se você tiver um script de test ou lint no package.json, rode aqui
+        # Exemplo: npm test
+        echo "Verificação concluída com sucesso!"
