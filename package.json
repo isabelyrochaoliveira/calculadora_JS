@@ -1,0 +1,16 @@
+{
+  "name": "calculadorajs",
+  "version": "1.0.0",
+  "main": "script.js",
+  "scripts": {
+  "lint": "npx eslint script.js",
+  "test": "echo 'Simulando testes unitários...' && exit 0"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "eslint": "^10.2.0"
+  }
+}
