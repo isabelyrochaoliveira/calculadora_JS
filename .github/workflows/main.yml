@@ -1,29 +1,48 @@
-name: CI Calculadora
+name: CI/CD Calculadora
 
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  build:
+  # ETAPA 1 e 2: Verificar erros e testar em outras versões
+  test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x, 22.x]
 
     steps:
-    - name: Checkout do código
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - name: Usando Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      
+      - name: Instalar dependências
+        run: npm install
+        
+      - name: Verificar erros (Lint/Build)
+        run: |
+          npm run build --if-present 
 
-    - name: Configurar Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-
-    - name: Instalar dependências
-      run: npm install
-
-    - name: Verificar erros de sintaxe (Lint)
-      run: |
-        # Se você tiver um script de test ou lint no package.json, rode aqui
-        # Exemplo: npm test
-        echo "Verificação concluída com sucesso!"
+  # ETAPA 3: Subir no GitHub Pages
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.' # Sobe todos os arquivos da raiz (index.html, style.css, etc)
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
